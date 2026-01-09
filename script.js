@@ -139,5 +139,5 @@ function startLiveMode() {
 
     runCycle();
     if (tickerInterval) clearInterval(tickerInterval);
-    tickerInterval = setInterval(runCycle, 15000);
+    tickerInterval = setInterval(runCycle, 60000);
 }
