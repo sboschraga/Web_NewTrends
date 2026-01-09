@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-    // 1. CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -7,10 +6,8 @@ export default async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== "POST") return res.status(405).json({ error: "Mètode no permès" });
 
-    // 2. Comprovació API Key
     const apiKey = process.env.GOOGLE_API_KEY;
     if (!apiKey) {
-        console.error("❌ ERROR: No hi ha API KEY");
         return res.status(500).json({ error: "Falta configurar GOOGLE_API_KEY a Vercel" });
     }
 
@@ -24,10 +21,8 @@ export default async function handler(req, res) {
     `;
 
     try {
-        console.log("📡 Connectant amb Google (Model PRO)...");
-        
-        // CORRECCIÓ: Usem el model 'gemini-pro' que és el més estable
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+        // AQUESTA ÉS LA URL CORRECTA DEL MODEL ACTUAL
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
             method: "POST",
@@ -37,25 +32,18 @@ export default async function handler(req, res) {
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error("❌ Error de Google:", errorText);
+            console.error("Error Google:", errorText);
+            // Si això falla, veuràs l'error exacte de Google
             return res.status(500).json({ error: `Google Error ${response.status}`, details: errorText });
         }
 
         const data = await response.json();
-        
-        if (!data.candidates || !data.candidates[0].content) {
-            console.error("❌ Bloqueig de seguretat:", JSON.stringify(data));
-            return res.status(500).json({ error: "Google ha bloquejat la resposta per seguretat." });
-        }
-
         let textResult = data.candidates[0].content.parts[0].text;
         textResult = textResult.replace(/```json/g, "").replace(/```/g, "").trim();
 
-        console.log("✅ ÈXIT!");
         return res.status(200).json(JSON.parse(textResult));
 
     } catch (err) {
-        console.error("❌ CRASH:", err);
         return res.status(500).json({ error: "Error intern", details: err.message });
     }
 }
