@@ -26,6 +26,7 @@ export default async function handler(req, res) {
         
         // --- AQUESTA LÍNIA ÉS LA IMPORTANT ---
         // NO pot posar "2.5". Ha de posar "gemini-flash-latest"
+// Ha de dir 'gemini-flash-latest', NO 'gemini-2.5-flash'
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
