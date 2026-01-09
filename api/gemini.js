@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-    // 1. CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -7,12 +6,10 @@ export default async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
 
     const apiKey = process.env.GOOGLE_API_KEY;
-    if (!apiKey) {
-        return res.status(500).json({ error: "Falta configurar GOOGLE_API_KEY a Vercel" });
-    }
+    if (!apiKey) return res.status(500).json({ error: "Falta API KEY" });
 
     const { text } = req.body;
-    if (!text) return res.status(400).json({ error: "El text està buit" });
+    if (!text) return res.status(400).json({ error: "Text buit" });
 
     const prompt = `
         Ets un periodista expert. Analitza: "${text}"
@@ -21,11 +18,11 @@ export default async function handler(req, res) {
     `;
 
     try {
-        console.log("📡 Connectant amb Google (Model CLÀSSIC PRO)...");
+        console.log("📡 Connectant amb Google (Model PRO LATEST)...");
         
-        // --- SOLUCIÓ FINAL: MODEL 'gemini-pro' ---
-        // Aquest model sortia a la teva llista com a disponible.
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+        // --- ÚLTIM INTENT AMB EL TEU COMPTE ACTUAL ---
+        // Aquest model sortia a la teva llista de disponibles.
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
             method: "POST",
@@ -42,17 +39,15 @@ export default async function handler(req, res) {
         const data = await response.json();
         
         if (!data.candidates || !data.candidates[0].content) {
-            return res.status(500).json({ error: "Google ha bloquejat la resposta per seguretat." });
+            return res.status(500).json({ error: "Bloqueig de seguretat." });
         }
 
         let textResult = data.candidates[0].content.parts[0].text;
         textResult = textResult.replace(/```json/g, "").replace(/```/g, "").trim();
 
-        console.log("✅ ÈXIT!");
         return res.status(200).json(JSON.parse(textResult));
 
     } catch (err) {
-        console.error("❌ CRASH:", err);
         return res.status(500).json({ error: "Error intern", details: err.message });
     }
 }
