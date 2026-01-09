@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propostes Ciutadanes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav id="navbar" class="hidden">
+        <div class="nav-links">
+            <button onclick="navTo('form')" class="nav-btn active" id="nav-new">Nova Proposta</button>
+            <button onclick="navTo('list')" class="nav-btn" id="nav-list">Propostes</button>
+            <button onclick="navTo('live')" class="nav-btn" id="nav-live">Directe</button>
+            <button onclick="navTo('links')" class="nav-btn" id="nav-legal">Marc Legal</button>
+        </div>
+        
+        <div class="user-info">
+            <div class="nav-lang">
+                <span onclick="setLang('CA')">CA</span>
+                <span onclick="setLang('ES')">ES</span>
+                <span onclick="setLang('EN')">EN</span>
+            </div>
+            <span id="user-display">Usuari: ...</span>
+            <button onclick="logout()" class="logout-btn" id="nav-logout">Tancar Sessió</button>
+        </div>
+    </nav>
+
+    <div id="screen-login" class="screen">
+        <div class="login-box">
+            <h1 id="login-title">ACCÉS CIUTADÀ</h1>
+            <p id="login-desc">Introdueix les teves dades per accedir</p>
+            <div class="input-group">
+                <label id="lbl-dni">Identificador (DNI)</label>
+                <input type="text" id="dniInput" placeholder="12345678A" maxlength="9">
+            </div>
+            <div class="input-group">
+                <label id="lbl-name">Nom i Cognoms</label>
+                <input type="text" id="nameInput" placeholder="El teu nom">
+            </div>
+            <button onclick="tryLogin()" class="primary-btn" id="btn-login">Entrar</button>
+            <p id="login-error" class="error-msg"></p>
+            <div class="lang-selector">
+                <span onclick="setLang('CA')" class="lang-opt">CA</span> | 
+                <span onclick="setLang('ES')" class="lang-opt">ES</span> | 
+                <span onclick="setLang('EN')" class="lang-opt">EN</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-form" class="screen hidden main-content">
+        <h2 id="form-title">Propostes Ciutadanes</h2>
+        <p class="subtitle" id="form-desc">Pots proposar idees, projectes, millores...</p>
+        <textarea id="proposalText" placeholder="Escriu la teva proposta aquí..."></textarea>
+        <div class="actions">
+            <button onclick="saveProposal()" class="primary-btn" id="btn-submit">Enviar Proposta</button>
+        </div>
+    </div>
+
+    <div id="screen-list" class="screen hidden main-content">
+        <h2 id="list-title">Llistat de Propostes</h2>
+        <div id="proposals-container"></div>
+    </div>
+
+    <div id="screen-live" class="screen hidden main-content">
+        <h2 id="live-title">Emissió en Directe</h2>
+        
+        <div class="tv-layout">
+            <div class="tv-video-column">
+                <div class="video-container">
+                    <div class="live-badge">● EN DIRECTE</div>
+                    
+                    <div class="ai-visualizer">
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    </div>
+
+                    <div class="tv-lower-third">
+                        <div class="tv-label">ACTUALITAT</div>
+                        <div class="tv-headline" id="tv-headline-text">CONNECTANT...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tv-analysis-column">
+                <div class="analysis-card">
+                    <h3>ANÀLISI EN TEMPS REAL</h3>
+                    <div class="analysis-content">
+                        <p class="analysis-meta">PROCESSANT PROPOSTA #<span id="prop-id">...</span></p>
+                        <hr>
+                        <p id="tv-analysis-text" class="typing-text">Esperant dades...</p>
+                    </div>
+                    <div class="analysis-footer">
+                        <span>ESTAT: <strong>ACTIU</strong></span>
+                        <span>CONFIDENCE: <strong>98%</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="live-info">
+            <h3 id="live-subtitle">Ple Municipal Ordinari - Anàlisi IA</h3>
+            <p id="live-desc">La Intel·ligència Artificial analitza i exposa les propostes veïnals en temps real.</p>
+        </div>
+    </div>
+
+    <div id="screen-links" class="screen hidden main-content">
+        <h2 id="links-title">Marc Legal</h2>
+        <div id="links-container"></div>
+    </div>
+
+    <div id="screen-success" class="screen hidden centered-screen">
+        <div class="success-icon">✓</div>
+        <h2 id="success-msg">Proposta registrada correctament</h2>
+        <button onclick="navTo('form')" class="primary-btn" id="btn-back">Tornar a escriure</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/toxicity"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
