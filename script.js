@@ -3,73 +3,42 @@
 // ==========================================
 let currentUser = { dni: "", name: "" };
 let activeLang = "CA";
-let toxicityModel = null;
-const threshold = 0.85;
 let tickerInterval = null;
-
-// 0. CARREGAR IA MODERACIÓ
-if (typeof toxicity !== 'undefined') {
-    toxicity.load(threshold).then(model => {
-        toxicityModel = model;
-        console.log("🤖 IA Moderació: OK");
-    });
-}
 
 // 1. TRADUCCIONS
 const translations = {
     CA: {
-        loginTitle: "ACCÉS CIUTADÀ", loginDesc: "Dades d'accés",
-        lblDni: "DNI", lblName: "Nom", btnLogin: "Entrar",
-        loginErrorDni: "DNI incorrecte", loginErrorName: "Falta el nom",
-        navNew: "Nova Proposta", navList: "Propostes", navLive: "Directe", navLegal: "Marc Legal", navLogout: "Sortir",
-        formTitle: "Propostes Ciutadanes", formDesc: "Envia la teva idea...",
-        phProposal: "Escriu aquí...", btnSubmit: "Enviar",
-        listTitle: "Llistat", linksTitle: "Marc Legal", successMsg: "Enviat!", btnBack: "Tornar",
-        tvConnecting: "CONTACTANT GOOGLE GEMINI...", 
-        tvWait: "Esperant propostes...",
-        aiLabel: "GEMINI ESTÀ ANALITZANT:"
+        navLive: "Directe", formTitle: "Propostes", 
+        tvConnecting: "CONNECTANT AMB LA IA...", 
+        aiLabel: "S'ESTÀ COMENTANT:" 
     },
-    ES: { loginTitle: "ACCESO", navLive: "Directo", tvConnecting: "CONTACTANDO GEMINI...", aiLabel: "GEMINI ANALIZANDO:" },
-    EN: { loginTitle: "LOGIN", navLive: "Live", tvConnecting: "CONTACTING GEMINI...", aiLabel: "GEMINI ANALYZING:" }
+    ES: { navLive: "Directo", formTitle: "Propuestas", tvConnecting: "CONECTANDO...", aiLabel: "COMENTANDO:" },
+    EN: { navLive: "Live", formTitle: "Proposals", tvConnecting: "CONNECTING...", aiLabel: "DISCUSSING:" }
 };
-
-const linksData = [
-    { title: "Llei Protecció Dades", desc: "BOE", url: "https://www.boe.es" }
-];
 
 function setLang(lang) {
     activeLang = lang;
-    const t = translations[lang] || translations['CA'];
-    
+    const t = translations[lang];
     document.getElementById('nav-live').innerText = t.navLive;
-    document.getElementById('form-title').innerText = t.formTitle;
-    
-    const label = document.querySelector('.ai-label');
-    if(label) label.innerText = t.aiLabel;
-    
+    document.querySelector('.ai-label').innerText = t.aiLabel;
     if (!document.getElementById('screen-list').classList.contains('hidden')) loadProposalsList();
 }
 
 // 2. NAVEGACIÓ
 function navTo(screenName) {
     document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
-    let target = document.getElementById('screen-' + screenName);
-    if(target) target.classList.remove('hidden');
+    document.getElementById('screen-' + screenName).classList.remove('hidden');
+    
+    if (screenName !== 'login') document.getElementById('navbar').classList.remove('hidden');
+    else document.getElementById('navbar').classList.add('hidden');
 
-    if (screenName !== 'login') {
-        document.getElementById('navbar').classList.remove('hidden');
-    } else {
-        document.getElementById('navbar').classList.add('hidden');
-    }
-
-    if(screenName === 'live') {
-        startGeminiLive(); // Arrenquem la connexió real
-    } else {
-        clearInterval(tickerInterval);
-    }
+    if(screenName === 'live') startLiveMode();
+    else clearInterval(tickerInterval);
+    
+    if(screenName === 'list') loadProposalsList();
 }
 
-// 3. LOGIN & SAVE
+// 3. LOGICA BÀSICA
 function tryLogin() {
     const name = document.getElementById('nameInput').value;
     if(name) {
@@ -85,12 +54,10 @@ function logout() { navTo('login'); }
 function saveProposal() {
     const text = document.getElementById('proposalText').value.trim();
     if (!text) return;
-
-    const newProp = { id: Date.now(), dni: currentUser.dni, name: currentUser.name, text: text, lang: activeLang };
+    const newProp = { id: Date.now(), dni: currentUser.dni, name: currentUser.name, text: text };
     let db = JSON.parse(localStorage.getItem('propostes_db') || "[]");
     db.unshift(newProp);
     localStorage.setItem('propostes_db', JSON.stringify(db));
-    
     document.getElementById('proposalText').value = "";
     navTo('success');
 }
@@ -104,24 +71,21 @@ function loadProposalsList() {
     });
 }
 
-function loadLinksList() { /* ... */ }
-
-
 // ==========================================
-// 5. CONNEXIÓ REAL AMB GOOGLE GEMINI (SENSE SIMULADORS)
+// 4. CONNEXIÓ AL BACKEND (api/gemini.js)
 // ==========================================
 
-function startGeminiLive() {
+function startLiveMode() {
     const headElem = document.getElementById('tv-headline-text');
     const bodyElem = document.getElementById('tv-analysis-text');
     const idElem = document.getElementById('prop-id');
-    const t = translations[activeLang] || translations['CA'];
-
+    const t = translations[activeLang];
+    
     let db = JSON.parse(localStorage.getItem('propostes_db') || "[]");
 
     if (db.length === 0) {
-        headElem.innerText = "NO HI HA PROPOSTES";
-        bodyElem.innerText = "Escriu una nova proposta per veure la IA en acció.";
+        headElem.innerText = "NO HI HA DADES";
+        bodyElem.innerText = "Crea una proposta per començar.";
         return;
     }
 
@@ -131,18 +95,27 @@ function startGeminiLive() {
         if (document.getElementById('screen-live').classList.contains('hidden')) return;
 
         const originalText = db[index].text;
+        idElem.innerText = db[index].id.toString().slice(-4);
         
         // ESTAT: PENSANT
-        headElem.innerText = t.tvConnecting; 
+        headElem.innerText = t.tvConnecting;
         headElem.style.color = "#00f2ff";
-        bodyElem.innerHTML = "Enviant dades a Google Cloud...";
-        idElem.innerText = db[index].id.toString().slice(-4);
+        bodyElem.innerHTML = "Enviant dades al núvol...";
 
         try {
-            // CRIDA REAL A LA API
-            const aiResponse = await callGeminiAPI(originalText);
+            // AQUI ESTÀ LA CLAU: Truquem al teu fitxer api/gemini.js
+            // Això només funcionarà quan estigui pujat a Vercel
+            const response = await fetch('/api/gemini', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: originalText })
+            });
+
+            if (!response.ok) throw new Error(`Error Backend: ${response.status}`);
+
+            const aiResponse = await response.json();
             
-            // SI ARRIBEM AQUÍ, LA IA HA RESPOST BÉ
+            // MOSTRAR RESULTAT
             headElem.style.opacity = 0;
             bodyElem.style.opacity = 0;
 
@@ -150,17 +123,15 @@ function startGeminiLive() {
                 headElem.innerText = aiResponse.titular;
                 headElem.style.color = "white";
                 bodyElem.innerText = aiResponse.analisi;
-                
                 headElem.style.opacity = 1;
                 bodyElem.style.opacity = 1;
             }, 500);
 
         } catch (error) {
-            // SI FALLA, MOSTREM L'ERROR REAL
-            console.error("Error Gemini:", error);
+            console.error(error);
             headElem.innerText = "ERROR DE CONNEXIÓ";
             headElem.style.color = "red";
-            bodyElem.innerText = `No s'ha pogut connectar amb Google Gemini. Causa: ${error.message}. Verifica la Clau API.`;
+            bodyElem.innerText = "Si estàs en local, assegura't d'usar 'vercel dev'. Si estàs en producció, revisa els logs.";
         }
 
         index = (index + 1) % db.length;
@@ -170,53 +141,3 @@ function startGeminiLive() {
     if (tickerInterval) clearInterval(tickerInterval);
     tickerInterval = setInterval(runCycle, 15000);
 }
-
-// FUNCIÓ QUE PARLA AMB GOOGLE
-// Aquesta funció ara truca al teu fitxer api/gemini.js
-async function callGeminiAPI(userText) {
-    
-    // Ja no necessitem la clau aquí, la té el servidor
-    // Fem una crida al NOSTRE servidor (api/gemini)
-    const response = await fetch('/api/gemini', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            text: userText // Enviem el text al teu backend
-        })
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error del servidor: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data; // El teu backend ja retorna el JSON net { titular, analisi }
-}
-
-    // URL DEL MODEL ESTÀNDARD (gemini-1.5-flash)
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
-
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }]
-        })
-    });
-
-    if (!response.ok) {
-        // Si Google retorna error (400, 403, 404, 500)
-        throw new Error(`Error HTTP ${response.status} - ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    
-    // Extreiem el text
-    let textResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    
-    if (!textResult) throw new Error("Google no ha retornat text.");
-
-    // Netegem el JSON
-    textResult = textResult.replace(/```json/g, '').replace(/```/g, '').trim();
-    
-    return JSON.parse(textResult);
