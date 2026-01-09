@@ -22,11 +22,11 @@ export default async function handler(req, res) {
     `;
 
     try {
-        console.log("📡 Connectant amb Google (Model 2.0 Flash)...");
+        console.log("📡 Connectant amb Google (Model Flash Latest)...");
         
-        // --- CANVI IMPORTANT ---
-        // Fem servir 'gemini-2.0-flash' que té molta més quota gratuïta que el 2.5
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+        // --- CANVI CRUCIAL ---
+        // Fem servir 'gemini-flash-latest'. Aquest sortia a la teva llista i és l'estable.
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
             method: "POST",
@@ -35,9 +35,9 @@ export default async function handler(req, res) {
         });
 
         if (!response.ok) {
-            // Si torna a donar error 429, ho sabrem
             const errorText = await response.text();
             console.error("❌ Error Google:", errorText);
+            // Si torna un 429 (Too Many Requests), ho retornem tal qual
             return res.status(response.status).json({ error: `Google Error ${response.status}`, details: errorText });
         }
 
