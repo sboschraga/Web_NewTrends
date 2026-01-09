@@ -7,10 +7,6 @@ let toxicityModel = null;
 const threshold = 0.85;
 let tickerInterval = null;
 
-// 🔥 POSA LA TEVA CLAU API REAL AQUÍ
-// Si aquesta clau no funciona, el sistema donarà error (no hi ha simulació).
-const GOOGLE_API_KEY = ""; 
-
 // 0. CARREGAR IA MODERACIÓ
 if (typeof toxicity !== 'undefined') {
     toxicity.load(threshold).then(model => {
@@ -176,22 +172,26 @@ function startGeminiLive() {
 }
 
 // FUNCIÓ QUE PARLA AMB GOOGLE
+// Aquesta funció ara truca al teu fitxer api/gemini.js
 async function callGeminiAPI(userText) {
-    if (!GOOGLE_API_KEY || GOOGLE_API_KEY.includes("ENGANXA")) {
-        throw new Error("Clau API no configurada");
+    
+    // Ja no necessitem la clau aquí, la té el servidor
+    // Fem una crida al NOSTRE servidor (api/gemini)
+    const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            text: userText // Enviem el text al teu backend
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error del servidor: ${response.status}`);
     }
 
-    const prompt = `
-        Ets un periodista expert.
-        Analitza la proposta: "${userText}".
-        
-        TASCA:
-        1. Crea un TITULAR curt i impactant (màx 8 paraules).
-        2. Crea un DESENVOLUPAMENT formal (30-40 paraules) explicant la proposta.
-
-        IMPORTANT: Respon NOMÉS en format JSON pur, sense blocs de codi markdown.
-        Format esperat: { "titular": "...", "analisi": "..." }
-    `;
+    const data = await response.json();
+    return data; // El teu backend ja retorna el JSON net { titular, analisi }
+}
 
     // URL DEL MODEL ESTÀNDARD (gemini-1.5-flash)
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
@@ -220,4 +220,3 @@ async function callGeminiAPI(userText) {
     textResult = textResult.replace(/```json/g, '').replace(/```/g, '').trim();
     
     return JSON.parse(textResult);
-}
