@@ -5,7 +5,6 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     if (req.method === 'OPTIONS') return res.status(200).end();
-    if (req.method !== "POST") return res.status(405).json({ error: "Mètode no permès" });
 
     const apiKey = process.env.GOOGLE_API_KEY;
     if (!apiKey) {
@@ -22,12 +21,11 @@ export default async function handler(req, res) {
     `;
 
     try {
-        console.log("📡 Connectant amb Google (Model Flash Latest)...");
+        console.log("📡 Connectant amb Google (Model CLÀSSIC PRO)...");
         
-        // --- AQUESTA LÍNIA ÉS LA IMPORTANT ---
-        // NO pot posar "2.5". Ha de posar "gemini-flash-latest"
-// Ha de dir 'gemini-flash-latest', NO 'gemini-2.5-flash'
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
+        // --- SOLUCIÓ FINAL: MODEL 'gemini-pro' ---
+        // Aquest model sortia a la teva llista com a disponible.
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
             method: "POST",
