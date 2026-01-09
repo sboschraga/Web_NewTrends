@@ -24,8 +24,8 @@ export default async function handler(req, res) {
     try {
         console.log("📡 Connectant amb Google (Model Flash Latest)...");
         
-        // --- CANVI CRUCIAL ---
-        // Fem servir 'gemini-flash-latest'. Aquest sortia a la teva llista i és l'estable.
+        // --- AQUESTA LÍNIA ÉS LA IMPORTANT ---
+        // NO pot posar "2.5". Ha de posar "gemini-flash-latest"
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
@@ -37,7 +37,6 @@ export default async function handler(req, res) {
         if (!response.ok) {
             const errorText = await response.text();
             console.error("❌ Error Google:", errorText);
-            // Si torna un 429 (Too Many Requests), ho retornem tal qual
             return res.status(response.status).json({ error: `Google Error ${response.status}`, details: errorText });
         }
 
