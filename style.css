@@ -2,7 +2,7 @@
    RESET I VARIABLES CORPORATIVES
    ========================================= */
 :root {
-    --corp-blue: #003F87;       /* BLAU EXACTE DEMANAT */
+    --corp-blue: #003F87;       /* COLOR EXACTE */
     --corp-dark: #002F64;       
     --corp-bg: #E6E6E6;         
     --text-main: #1e293b;
@@ -55,7 +55,6 @@ body {
 
 .user-info { display: flex; gap: 15px; align-items: center; font-size: 0.9rem; color: white; padding-left: 20px; border-left: 1px solid rgba(255,255,255,0.3); }
 
-/* BOTÓ TANCAR SESSIÓ (PETIT I BLANC) */
 .logout-btn {
     background-color: white; color: var(--corp-blue); border: none;
     padding: 6px 14px; border-radius: 4px; cursor: pointer; 
@@ -69,7 +68,10 @@ body {
 .main-content { padding: 40px; max-width: 800px; margin: 0 auto; width: 100%; overflow-y: auto; }
 h1, h2, h3 { color: var(--corp-blue); margin-bottom: 1.5rem; letter-spacing: -0.5px; }
 
-.input-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-main); }
+/* CORRECCIÓ 1: MÉS ESPAI AL LOGIN */
+.input-group { margin-bottom: 30px; } /* Augmentat de 20 a 30 */
+.input-group label { display: block; margin-bottom: 10px; font-weight: 500; color: var(--text-main); }
+
 input, textarea {
     width: 100%; padding: 12px 16px; border: 1px solid #cbd5e1;
     background: white; color: var(--text-main); font-size: 1rem; border-radius: var(--radius);
@@ -80,15 +82,37 @@ textarea { height: 160px; resize: none; margin-bottom: 25px; }
 .primary-btn {
     width: 100%; background-color: var(--corp-blue); color: white; border: none;
     padding: 14px; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 1rem; transition: background 0.2s;
+    margin-top: 10px; /* Una mica més d'aire sobre el botó */
 }
 .primary-btn:hover { background-color: var(--corp-dark); }
 
+/* LOGIN */
 #screen-login { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: var(--corp-bg); }
-.login-card, .success-card { background: white; padding: 50px 40px; border-radius: 8px; width: 400px; text-align: center; border: 1px solid #e2e8f0; box-shadow: var(--shadow); }
-.login-card p, .success-card p { margin-bottom: 40px; color: var(--text-light); }
-.check-icon { font-size: 3rem; color: #10b981; margin-bottom: 20px; }
+.login-card { background: white; padding: 50px 40px; border-radius: 8px; width: 400px; text-align: center; border: 1px solid #e2e8f0; box-shadow: var(--shadow); }
+.login-card p { margin-bottom: 40px; color: var(--text-light); }
 
-/* BOTÓ TORNAR A ESCRIURE (GRAN I BLAU) */
+/* CORRECCIÓ 3: SUCCESS CENTRAT AL MIG DE LA PANTALLA */
+#screen-success {
+    display: flex !important; /* Això centra el contingut */
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;     
+    height: 100%;            
+    padding-top: 0;          
+}
+
+/* --- AFEGEIX AIXÒ JUST A SOTA PER ARREGLAR L'ERROR --- */
+#screen-success.hidden {
+    display: none !important; /* Això assegura que s'amagui quan toca */
+}
+
+.success-card { 
+    background: white; padding: 60px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: var(--shadow); 
+    text-align: center; max-width: 500px; width: 100%;
+}
+.check-icon { font-size: 3rem; color: #10b981; margin-bottom: 20px; }
+.success-card p { margin-bottom: 50px; color: var(--text-light); font-size: 1.1rem; }
+
 #btn-back {
     width: auto !important; min-width: 250px; padding: 15px 30px;
     background-color: var(--corp-blue); color: white; border: none;
@@ -97,7 +121,7 @@ textarea { height: 160px; resize: none; margin-bottom: 25px; }
 }
 #btn-back:hover { background-color: var(--corp-dark); transform: translateY(-2px); }
 
-/* LLISTAT I LINKS (ADAPTABLES) */
+/* LLISTAT I LINKS */
 .proposal-card {
     background: white; border: 1px solid #e2e8f0; padding: 25px;
     margin-bottom: 15px; border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -134,7 +158,7 @@ textarea { height: 160px; resize: none; margin-bottom: 25px; }
     max-width: 1400px; width: 100%; height: auto; min-height: 500px; margin-top: 20px;
 }
 
-/* MONITOR (TITULAR) */
+/* MONITOR */
 .monitor-container { height: 500px; position: sticky; top: 30px; }
 .monitor-screen {
     background-color: #000; width: 100%; height: 100%; border-radius: 12px;
@@ -143,7 +167,16 @@ textarea { height: 160px; resize: none; margin-bottom: 25px; }
 }
 .on-air-badge { position: absolute; top: 20px; left: 20px; background-color: #dc2626; color: white; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 0.8rem; z-index: 20; }
 
-.audio-visualizer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%); display: flex; gap: 8px; height: 100px; }
+/* CORRECCIÓ 4: BARRES DE SO CENTRADES VERTICALMENT */
+.audio-visualizer { 
+    position: absolute; 
+    top: 50%; left: 50%; 
+    transform: translate(-50%, -60%); 
+    display: flex; 
+    gap: 8px; 
+    height: 150px; /* Alçada contenidor */
+    align-items: center; /* CLAU: Això fa que creixin des del centre */
+}
 .bar { width: 12px; background: linear-gradient(to top, #003F87, #4d8aff); border-radius: 4px; animation: bounce 1s infinite ease-in-out; box-shadow: 0 0 15px rgba(0, 63, 135, 0.6); }
 @keyframes bounce { 0%, 100% { height: 20px; } 50% { height: 80px; } }
 .bar:nth-child(1) { animation-duration: 1.2s; } .bar:nth-child(2) { animation-duration: 0.9s; } .bar:nth-child(4) { animation-duration: 0.8s; height: 100px; }
