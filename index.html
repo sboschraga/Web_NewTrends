@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma de Participació</title>
     <link rel="stylesheet" href="style.css">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
@@ -62,7 +61,7 @@
         <div class="success-card">
             <div class="check-icon">✓</div>
             <h2>Proposta Registrada</h2>
-            <p>La vostra sol·licitud ha estat emmagatzemada correctament al sistema.</p>
+            <p>La vostra sol·licitud ha estat emmagatzemada i traduïda correctament.</p>
             <button id="btn-back" onclick="navTo('form')" class="secondary-btn">Tornar a escriure</button>
         </div>
     </div>
@@ -105,15 +104,20 @@
                 
                 <div class="panel-content">
                     <div class="text-block citizen-block">
-                        <label class="block-label" id="lbl-citizen">PROPOSTA CIUTADANA</label>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <label class="block-label" id="lbl-citizen" style="margin:0;">PROPOSTA CIUTADANA</label>
+                            <span id="tv-author-name" class="author-tag">Nom Ciutadà</span>
+                        </div>
                         <div id="tv-proposal-text" class="scroll-text">Esperant dades...</div>
                     </div>
 
                     <div class="text-block gov-block">
                         <label class="block-label" id="lbl-gov">RESPOSTA DEL GOVERN</label>
-                        <div id="tv-gov-text" class="scroll-text">Esperant dades...</div>
+                        <div id="tv-gov-text" class="scroll-text">Anàlisi en curs...</div>
                     </div>
                 </div>
+
+                <div id="live-vote-container"></div>
 
                 <div class="voting-buttons">
                     <button onclick="vote('approve')" class="vote-btn btn-approve">Aprovar</button>
@@ -121,6 +125,7 @@
                     <button onclick="vote('reject')" class="vote-btn btn-reject">Refusar</button>
                 </div>
             </div>
+
         </div>
     </div>
 
