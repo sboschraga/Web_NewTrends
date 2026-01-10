@@ -1,5 +1,5 @@
 /* =========================================
-   RESET I VARIABLES
+   RESET I VARIABLES CORPORATIVES
    ========================================= */
 :root {
     --corp-blue: #003F87;
@@ -110,12 +110,25 @@ textarea { height: 160px; resize: none; margin-bottom: 25px; }
 .live-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; height: calc(100vh - 140px); margin-top: 10px; }
 .monitor-container { height: 100%; position: relative; }
 .monitor-screen { background: #000; width: 100%; height: 100%; border-radius: 12px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
-.on-air-badge { position: absolute; top: 20px; left: 20px; background: #dc2626; color: white; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 0.8rem; }
-.audio-visualizer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%); display: flex; gap: 8px; height: 150px; align-items: center; }
+.on-air-badge { position: absolute; top: 20px; left: 20px; background: #dc2626; color: white; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 0.8rem; z-index: 20; }
+
+/* MODIFICAT: Visualizer al fons (z-index 1) */
+.audio-visualizer { 
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%); 
+    display: flex; gap: 8px; height: 150px; align-items: center;
+    z-index: 1; /* Al fons */
+}
 .bar { width: 12px; background: linear-gradient(to top, #003F87, #4d8aff); border-radius: 4px; animation: bounce 1s infinite ease-in-out; }
 @keyframes bounce { 0%, 100% { height: 20px; } 50% { height: 100px; } }
 .bar:nth-child(even) { animation-duration: 0.9s; } .bar:nth-child(4) { height: 120px; }
-.lower-third { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 40px 30px; display: flex; gap: 15px; width: 100%; }
+
+/* MODIFICAT: Text a sobre (z-index 10) */
+.lower-third { 
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); 
+    padding: 40px 30px; display: flex; gap: 15px; width: 100%; 
+    position: relative; /* Necessari pel z-index */
+    z-index: 10; /* A sobre de les barres */
+}
 .lower-red-bar { width: 6px; height: 60px; background: #dc2626; }
 .lower-category { color: #ffd700; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; }
 #tv-headline-text { color: white; font-size: 2rem; font-weight: 800; line-height: 1.1; margin: 0; }
@@ -131,6 +144,8 @@ textarea { height: 160px; resize: none; margin-bottom: 25px; }
 .voting-buttons { padding: 15px; background: #f8fafc; display: flex; gap: 10px; }
 .vote-btn { flex: 1; padding: 12px; border: none; border-radius: var(--radius); font-weight: 600; color: white; cursor: pointer; }
 .btn-approve { background: #059669; } .btn-postpone { background: #d97706; } .btn-reject { background: #dc2626; }
+
+#live-vote-container { padding: 0 20px; margin-bottom: 10px; }
 
 /* =========================================
    ADAPTACIÓ MÒBIL (MENU DESPLEGABLE)
