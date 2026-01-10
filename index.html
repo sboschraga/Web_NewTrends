@@ -30,7 +30,7 @@
             
             <div class="user-info">
                 <span id="user-display">Usuari</span>
-                <button onclick="logout()" class="logout-btn">Tancar sessió</button>
+                <button onclick="logout()" class="logout-btn">Sortir</button>
             </div>
         </div>
     </nav>
@@ -78,17 +78,14 @@
 
     <div id="screen-live" class="screen hidden">
         <div class="live-layout">
-            
             <div class="monitor-container">
                 <div class="monitor-screen">
                     <div class="on-air-badge">● EN DIRECTE</div>
-                    
                     <div class="audio-visualizer">
                         <div class="bar"></div><div class="bar"></div><div class="bar"></div>
                         <div class="bar"></div><div class="bar"></div><div class="bar"></div>
                         <div class="bar"></div><div class="bar"></div><div class="bar"></div>
                     </div>
-
                     <div class="lower-third">
                         <div class="lower-red-bar"></div>
                         <div class="lower-content">
@@ -101,7 +98,6 @@
 
             <div class="panel-container">
                 <div class="panel-header">PANELL DE CONTROL</div>
-                
                 <div class="panel-content">
                     <div class="text-block citizen-block">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -110,22 +106,18 @@
                         </div>
                         <div id="tv-proposal-text" class="scroll-text">Esperant dades...</div>
                     </div>
-
                     <div class="text-block gov-block">
                         <label class="block-label" id="lbl-gov">RESPOSTA DEL GOVERN</label>
                         <div id="tv-gov-text" class="scroll-text">Anàlisi en curs...</div>
                     </div>
                 </div>
-
                 <div id="live-vote-container"></div>
-
                 <div class="voting-buttons">
                     <button onclick="vote('approve')" class="vote-btn btn-approve">Aprovar</button>
                     <button onclick="vote('postpone')" class="vote-btn btn-postpone">Ajornar</button>
                     <button onclick="vote('reject')" class="vote-btn btn-reject">Refusar</button>
                 </div>
             </div>
-
         </div>
     </div>
 
