@@ -617,3 +617,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setLang('CA');  
     navTo('login'); 
 });
+
+// ... (Tot el teu codi anterior aquí) ...
+
+// FUNCIÓ PER OBRIR/TANCAR EL MENÚ AL MÒBIL
+function toggleMenu() {
+    const navContainer = document.getElementById('nav-container');
+    navContainer.classList.toggle('nav-open');
+}

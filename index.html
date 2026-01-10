@@ -12,25 +12,33 @@
 <body>
 
     <nav id="navbar" class="hidden">
-        <div class="nav-links">
-            <button id="nav-new" class="nav-btn" onclick="navTo('form')">Nova Proposta</button>
-            <button id="nav-list" class="nav-btn" onclick="navTo('list')">Llistat</button>
-            <button id="nav-legal" class="nav-btn" onclick="navTo('links')">Marc Legal</button>
-            <button id="nav-live" class="nav-btn live-btn" onclick="navTo('live')">Directe ●</button>
+        <div class="mobile-head">
+            <span class="brand-title">Participa</span>
+            <button class="hamburger-btn" onclick="toggleMenu()">☰</button>
         </div>
 
-        <div class="nav-right-group">
-            <div class="lang-selector">
-                <button onclick="setLang('CA')" class="lang-btn active" id="lang-ca">CA</button>
-                <span class="divider">|</span>
-                <button onclick="setLang('ES')" class="lang-btn" id="lang-es">ES</button>
-                <span class="divider">|</span>
-                <button onclick="setLang('EN')" class="lang-btn" id="lang-en">EN</button>
-            </div>
+        <div id="nav-container" class="nav-menu-closed">
             
-            <div class="user-info">
-                <span id="user-display">Usuari</span>
-                <button onclick="logout()" class="logout-btn">Sortir</button>
+            <div class="nav-links">
+                <button id="nav-new" class="nav-btn" onclick="navTo('form'); toggleMenu()">Nova Proposta</button>
+                <button id="nav-list" class="nav-btn" onclick="navTo('list'); toggleMenu()">Llistat</button>
+                <button id="nav-legal" class="nav-btn" onclick="navTo('links'); toggleMenu()">Marc Legal</button>
+                <button id="nav-live" class="nav-btn live-btn" onclick="navTo('live'); toggleMenu()">Directe ●</button>
+            </div>
+
+            <div class="nav-right-group">
+                <div class="lang-selector">
+                    <button onclick="setLang('CA')" class="lang-btn active" id="lang-ca">CA</button>
+                    <span class="divider">|</span>
+                    <button onclick="setLang('ES')" class="lang-btn" id="lang-es">ES</button>
+                    <span class="divider">|</span>
+                    <button onclick="setLang('EN')" class="lang-btn" id="lang-en">EN</button>
+                </div>
+                
+                <div class="user-info">
+                    <span id="user-display">Usuari</span>
+                    <button onclick="logout()" class="logout-btn">Sortir</button>
+                </div>
             </div>
         </div>
     </nav>
