@@ -3,123 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Propostes Ciutadanes</title>
+    <title>Plataforma de Participació</title>
     <link rel="stylesheet" href="style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <nav id="navbar" class="hidden">
         <div class="nav-links">
-            <button onclick="navTo('form')" class="nav-btn active" id="nav-new">Nova Proposta</button>
-            <button onclick="navTo('list')" class="nav-btn" id="nav-list">Propostes</button>
-            <button onclick="navTo('live')" class="nav-btn" id="nav-live">Directe</button>
-            <button onclick="navTo('links')" class="nav-btn" id="nav-legal">Marc Legal</button>
+            <button id="nav-new" class="nav-btn" onclick="navTo('form')">Nova Proposta</button>
+            <button id="nav-list" class="nav-btn" onclick="navTo('list')">Llistat</button>
+            <button id="nav-legal" class="nav-btn" onclick="navTo('links')">Marc Legal</button>
+            <button id="nav-live" class="nav-btn live-btn" onclick="navTo('live')">Directe ●</button>
         </div>
-        
-        <div class="user-info">
-            <div class="nav-lang">
-                <span onclick="setLang('CA')">CA</span>
-                <span onclick="setLang('ES')">ES</span>
-                <span onclick="setLang('EN')">EN</span>
+
+        <div class="nav-right-group">
+            <div class="lang-selector">
+                <button onclick="setLang('CA')" class="lang-btn active" id="lang-ca">CA</button>
+                <span class="divider">|</span>
+                <button onclick="setLang('ES')" class="lang-btn" id="lang-es">ES</button>
+                <span class="divider">|</span>
+                <button onclick="setLang('EN')" class="lang-btn" id="lang-en">EN</button>
             </div>
-            <span id="user-display">Usuari: ...</span>
-            <button onclick="logout()" class="logout-btn" id="nav-logout">Tancar Sessió</button>
+            
+            <div class="user-info">
+                <span id="user-display">Usuari</span>
+                <button onclick="logout()" class="logout-btn">Tancar sessió</button>
+            </div>
         </div>
     </nav>
 
     <div id="screen-login" class="screen">
-        <div class="login-box">
-            <h1 id="login-title">ACCÉS CIUTADÀ</h1>
-            <p id="login-desc">Introdueix les teves dades per accedir</p>
+        <div class="login-card">
+            <h1>Accés Ciutadà</h1>
+            <p>Identifica't per accedir a la plataforma</p>
             <div class="input-group">
-                <label id="lbl-dni">Identificador (DNI)</label>
-                <input type="text" id="dniInput" placeholder="12345678A" maxlength="9">
+                <label>Nom Complet</label>
+                <input type="text" id="nameInput" placeholder="Ex: Joan Garcia">
             </div>
             <div class="input-group">
-                <label id="lbl-name">Nom i Cognoms</label>
-                <input type="text" id="nameInput" placeholder="El teu nom">
+                <label>DNI / NIE</label>
+                <input type="text" id="dniInput" placeholder="Ex: 12345678A">
             </div>
-            <button onclick="tryLogin()" class="primary-btn" id="btn-login">Entrar</button>
-            <p id="login-error" class="error-msg"></p>
-            <div class="lang-selector">
-                <span onclick="setLang('CA')" class="lang-opt">CA</span> | 
-                <span onclick="setLang('ES')" class="lang-opt">ES</span> | 
-                <span onclick="setLang('EN')" class="lang-opt">EN</span>
-            </div>
+            <button onclick="tryLogin()" class="primary-btn">Accedir</button>
         </div>
     </div>
 
     <div id="screen-form" class="screen hidden main-content">
-        <h2 id="form-title">Propostes Ciutadanes</h2>
-        <p class="subtitle" id="form-desc">Pots proposar idees, projectes, millores...</p>
-        <textarea id="proposalText" placeholder="Escriu la teva proposta aquí..."></textarea>
-        <div class="actions">
-            <button onclick="saveProposal()" class="primary-btn" id="btn-submit">Enviar Proposta</button>
+        <h2>Nova Proposta</h2>
+        <textarea id="proposalText" placeholder="Descriu la teva proposta detalladament..."></textarea>
+        <button onclick="saveProposal()" class="primary-btn">Registrar Proposta</button>
+    </div>
+
+    <div id="screen-success" class="screen hidden main-content">
+        <div class="success-card">
+            <div class="check-icon">✓</div>
+            <h2>Proposta Registrada</h2>
+            <p>La vostra sol·licitud ha estat emmagatzemada i traduïda correctament.</p>
+            <button id="btn-back" onclick="navTo('form')" class="secondary-btn">Tornar a escriure</button>
         </div>
     </div>
 
     <div id="screen-list" class="screen hidden main-content">
-        <h2 id="list-title">Llistat de Propostes</h2>
+        <h2>Registre de Propostes</h2>
         <div id="proposals-container"></div>
     </div>
 
-    <div id="screen-live" class="screen hidden main-content">
-        <h2 id="live-title">Emissió en Directe</h2>
-        
-        <div class="tv-layout">
-            <div class="tv-video-column">
-                <div class="video-container">
-                    <div class="live-badge">● EN DIRECTE</div>
-                    
-                    <div class="ai-visualizer">
-                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                    </div>
-
-                    <div class="tv-lower-third">
-                        <div class="tv-label">ACTUALITAT</div>
-                        <div class="tv-headline" id="tv-headline-text">CONNECTANT...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tv-analysis-column">
-                <div class="analysis-card">
-                    <h3>ANÀLISI EN TEMPS REAL</h3>
-                    <div class="analysis-content">
-                        <p class="analysis-meta">PROCESSANT PROPOSTA #<span id="prop-id">...</span></p>
-                        <hr>
-                        <p id="tv-analysis-text" class="typing-text">Esperant dades...</p>
-                    </div>
-                    <div class="analysis-footer">
-                        <span>ESTAT: <strong>ACTIU</strong></span>
-                        <span>CONFIDENCE: <strong>98%</strong></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="live-info">
-            <h3 id="live-subtitle">Ple Municipal Ordinari - Anàlisi IA</h3>
-            <p id="live-desc">La Intel·ligència Artificial analitza i exposa les propostes veïnals en temps real.</p>
-        </div>
-    </div>
-
     <div id="screen-links" class="screen hidden main-content">
-        <h2 id="links-title">Marc Legal</h2>
+        <h2 id="links-title">Marc Legal i Normativa</h2>
         <div id="links-container"></div>
     </div>
 
-    <div id="screen-success" class="screen hidden centered-screen">
-        <div class="success-icon">✓</div>
-        <h2 id="success-msg">Proposta registrada correctament</h2>
-        <button onclick="navTo('form')" class="primary-btn" id="btn-back">Tornar a escriure</button>
+    <div id="screen-live" class="screen hidden">
+        <div class="live-layout">
+            
+            <div class="monitor-container">
+                <div class="monitor-screen">
+                    <div class="on-air-badge">● EN DIRECTE</div>
+                    
+                    <div class="audio-visualizer">
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    </div>
+
+                    <div class="lower-third">
+                        <div class="lower-red-bar"></div>
+                        <div class="lower-content">
+                            <span class="lower-category">TITULAR // EXP. <span id="prop-id">0000</span></span>
+                            <h1 id="tv-headline-text">CONNECTANT...</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-container">
+                <div class="panel-header">PANELL DE CONTROL</div>
+                
+                <div class="panel-content">
+                    <div class="text-block citizen-block">
+                        <label class="block-label" id="lbl-citizen">PROPOSTA CIUTADANA</label>
+                        <div id="tv-proposal-text" class="scroll-text">Esperant dades...</div>
+                    </div>
+
+                    <div class="text-block gov-block">
+                        <label class="block-label" id="lbl-gov">RESPOSTA DEL GOVERN</label>
+                        <div id="tv-gov-text" class="scroll-text">Anàlisi en curs...</div>
+                    </div>
+                </div>
+
+                <div class="voting-buttons">
+                    <button onclick="vote('approve')" class="vote-btn btn-approve">Aprovar</button>
+                    <button onclick="vote('postpone')" class="vote-btn btn-postpone">Ajornar</button>
+                    <button onclick="vote('reject')" class="vote-btn btn-reject">Refusar</button>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/toxicity"></script>
     <script src="script.js"></script>
-
 </body>
 </html>
